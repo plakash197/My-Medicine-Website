@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import getmedicine, { getimage } from './getmedicine';
 import MedicineCard from './Medicinedata';
 import axios from 'axios';
 import './index.css';
 
-export default function Find({ setView }) {
+export default function Find() {
   const [searchTerm, setSearchTerm] = useState('');
   const [medicine, setMedicine] = useState({});
   const [list, setList] = useState([]);
-  const [loading, setLoading] = useState();
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [image, setImage] = useState('');
 
@@ -21,25 +21,26 @@ export default function Find({ setView }) {
       return;
     }
 
-    const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:${value}*&count=openfda.brand_name.exact&limit=10`;
-    my = axios.get(url).then(function (response) {
-      const medicineRow = response.data.results;
+    const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:${encodeURIComponent(
+      value
+    )}*&count=openfda.brand_name.exact&limit=10`;
+    axios
+      .get(url)
+      .then(function (response) {
+        const medicineRow = response.data.results || [];
 
-      const Name = [];
+        const Name = [];
 
-      for (let x = 0; x < medicineRow.length; x++) {
-        const medicineName = medicineRow[x];
-        Name.push(medicineName.term);
-      }
+        for (let x = 0; x < medicineRow.length; x++) {
+          const medicineName = medicineRow[x];
+          Name.push(medicineName.term);
+        }
 
-      setList(Name);
-    });
-
-    if (typeof window.changeddetails === 'function') {
-      window.changeddetails();
-    } else {
-      console.log('Searching for:', searchTerm);
-    }
+        setList(Name);
+      })
+      .catch(function () {
+        setList([]);
+      });
   };
 
   function handlequery() {
@@ -56,26 +57,25 @@ export default function Find({ setView }) {
           const activeMedicine = response.data.results[0];
           setMedicine(activeMedicine);
 
-          let searchName = response?.data?.results[0]?.openfda?.generic_name[0]
+          let searchName = activeMedicine?.openfda?.generic_name?.[0];
 
           getimage(searchName)
             .then(function (res) {
               if (res.data && res.data.results && res.data.results.length > 0) {
-                setImage(res.data.results[0].urls.regular
-                  );
+                setImage(res.data.results[0].urls.regular);
               } else {
-                console.log('गूगल को इस नाम की कोई फोटो नहीं मिली');
+                console.log('No image found for this medicine name');
               }
             })
             .catch(function (error) {
               console.log('Google Image API Call Failed:', error);
             });
         } else {
-          setError('Medicine Details Not Found, Try Again Letter');
+          setError('Medicine Details Not Found, Try Again Later');
         }
         setLoading(false);
       })
-      .catch(function (err) {
+      .catch(function () {
         if (!window.navigator.onLine) {
           setError(
             'No Internet Connection 🌐 Check Your internet connection And Try Again Later'

@@ -1,7 +1,8 @@
 import axios from 'axios';
 
 function getmedicine(query, sku) {
-  const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${query || sku}"&limit=1`;
+  const searchValue = encodeURIComponent(query || sku || '');
+  const url = `https://api.fda.gov/drug/label.json?search=openfda.brand_name:"${searchValue}"&limit=1`;
 
   const data = axios.get(url);
   return data;

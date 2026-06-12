@@ -1,7 +1,6 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
-export default function Home({ setView }) {
+export default function Home() {
   return (
     <div className="bg-[#f1f5f9] min-h-screen flex flex-col font-sans select-none">
 
@@ -118,7 +117,7 @@ export default function Home({ setView }) {
                 <div className="row flex flex-col gap-2.5 md:gap-5">
                   <div className="flex gap-2 items-center">
                     <p className="p bg-blue-600 text-white p-[3px_7px] rounded-full text-xs sm:text-xl">1</p>
-                    <p className="text-black text-lg sm:text-[20px italic">Click On Find Medicine</p>
+                    <p className="text-black text-lg sm:text-[20px] italic">Click On Find Medicine</p>
                   </div>
                   <div className="flex gap-2 items-center">
                     <p className="p bg-blue-600 text-white p-[3px_7px] rounded-full text-xs sm:text-xl">2</p>

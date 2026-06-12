@@ -1,24 +1,21 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
-export default function Welcome({ onContinue }) {
-  const [greeting, setGreeting] = useState('');
-  const [username, setUsername] = useState('');
+function formatName(name) {
+  return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+}
 
-  useEffect(() => {
-    const formatName = (name) => {
-      return name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-    };
+function getGreeting() {
+  const h = new Date().getHours();
+  if (h < 12) return 'Good Morning';
+  if (h < 17) return 'Good Afternoon';
+  return 'Good Evening';
+}
 
-    const getGreeting = () => {
-      const h = new Date().getHours();
-      if (h < 12) return 'Good Morning';
-      if (h < 17) return 'Good Afternoon';
-      return 'Good Evening';
-    };
-
-    setGreeting(getGreeting());
-
+export default function Welcome() {
+  const navigate = useNavigate();
+  const [greeting] = useState(getGreeting);
+  const [username] = useState(function () {
     let storedUsername = localStorage.getItem('username');
 
     if (!storedUsername) {
@@ -27,13 +24,13 @@ export default function Welcome({ onContinue }) {
       localStorage.setItem('username', storedUsername);
     }
 
-    setUsername(storedUsername);
-  }, []);
+    return storedUsername;
+  });
 
   return (
     <div
       id="welcomeScreen"
-      onClick={onContinue}
+      onClick={() => navigate('/home')}
       className="fixed inset-0 bg-cover bg-center flex items-center justify-center p-5 overflow-hidden cursor-pointer select-none before:content-[''] before:absolute before:inset-0 before:bg-[radial-gradient(circle_at_top,rgba(255,255,255,0.08),transparent_60%)]"
       style={{
         backgroundImage: `url('https://www.pngmagic.com/image_small/red-abstract-background-hd-images-for-designs_MYT.webp')`,
