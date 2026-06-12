@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getDetils, getimage } from './getmedicine';
 import { HiArrowLeft } from 'react-icons/hi';
@@ -20,12 +20,7 @@ function MedicineDetail() {
   const [error, setError] = useState('');
   const [disclaimer, setDisclaimer] = useState('');
 
-  function handlequery() {
-    setLoading(true);
-    setError('');
-    setDetails({});
-    setImage('medicine');
-
+  function fetchDetails() {
     getDetils(sku)
       .then(function (response) {
         if (response.data.results && response.data.results.length > 0) {
@@ -40,14 +35,14 @@ function MedicineDetail() {
               }
             })
             .catch(function (error) {
-              console.log('Google Image Fetch Error', error);
+              console.log('Image Fetch Error', error);
             });
         } else {
           setError('Medicine Details Not Found, Try Again Later');
         }
         setLoading(false);
       })
-      .catch(function (err) {
+      .catch(function () {
         if (!window.navigator.onLine) {
           setError(
             'No Internet Connection 🌐 Check Your internet connection And Try Again Later'
@@ -59,12 +54,21 @@ function MedicineDetail() {
       });
   }
 
+  function handlequery() {
+    setLoading(true);
+    setError('');
+    setDetails({});
+    setImage('');
+    fetchDetails();
+  }
+
   useEffect(
     function () {
       if (sku) {
-        handlequery();
+        fetchDetails();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [sku]
   );
 
@@ -90,7 +94,7 @@ function MedicineDetail() {
       </div>
 
       {disclaimer && (
-        <div class="w-full bg-red-600 text-white py-2 font-medium text-sm">
+        <div className="w-full bg-red-600 text-white py-2 font-medium text-sm">
           <marquee behavior="scroll" direction="left" scrollamount="6">
             {disclaimer}
           </marquee>
@@ -142,7 +146,7 @@ function MedicineDetail() {
                       image ||
                       'https://placehold.co/300x300?text=No+Image+Available'
                     }
-                    alt={details.openfda?.brand_name[0] || 'medicine'}
+                    alt={details.openfda?.brand_name?.[0] || 'medicine'}
                     onError={(e) => {
                       e.target.src =
                         'https://placehold.co/300x300?text=No+Image+Available';

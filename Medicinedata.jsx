@@ -1,9 +1,8 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 
 function MedicineCard({ alldata, pic }) {
   const sku = alldata?.set_id;
-  const id = alldata?.openfda?.generic_name[0];
+  const id = alldata?.openfda?.generic_name?.[0] || 'medicine';
 
   return (
     <>
@@ -30,13 +29,13 @@ function MedicineCard({ alldata, pic }) {
                   <img
                     src={
                       pic ||
-                      'https://placeholder.co/300x300?text=No+Image+Available'
+                      'https://placehold.co/300x300?text=No+Image+Available'
                     }
                     alt="medicine-pic"
                     className="w-full h-45 md:h-full max-h-[220px] object-cover rounded-lg shadow-md m-0"
                     onError={(e) => {
                       e.target.src =
-                        'https://placeholder.co/300x300?text=No+Image+Available';
+                        'https://placehold.co/300x300?text=No+Image+Available';
                     }}
                   />
                 </a>
