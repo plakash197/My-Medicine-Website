@@ -85,9 +85,7 @@ function MedicineDetail() {
             <span>Back</span>
           </button>
           <h1 className="text-lg font-bold tracking-wide truncate max-w-[200px] sm:max-w-none">
-            {details.openfda?.brand_name
-              ? details.openfda.brand_name[0]
-              : 'Medicine Details'}
+            {details?.openfda?.brand_name?.[0] || 'Medicine Details'}
           </h1>
           <div className="w-10"></div>
         </div>
